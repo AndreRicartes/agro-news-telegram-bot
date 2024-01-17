@@ -139,6 +139,27 @@ noticias = get_news()
 imasul_noticia = (noticias[0]['texto'])
 imasul_link = (noticias[0]['link'])
 
+def get_news():
+    url_cemtecms = "https://www.cemtec.ms.gov.br/noticias/"
+    headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0"}  # Adicionar headers
+
+    response = requests.get(url_cemtecms, headers=headers)  # Usar requests.get() e passar headers
+    soup = BeautifulSoup(response.content, 'html.parser')  # Usar response.content
+
+    noticias_cemtecms = soup.find_all('div', class_='card')  # Seletor mais específico
+
+    noticias = []
+    for item in noticias_cemtecms:
+        link = item.find('a')['href']
+        texto = item.find('a').text
+        noticias.append({'link': link, 'texto': texto})
+
+    return noticias
+
+noticias = get_news()
+
+cemtecms_link = (noticias[0]['link'])
+
 
 #Faz o bot responder mensagens
 '''
@@ -179,4 +200,7 @@ bot.send_message('@DR_noticias', message_soja_paranagua)
 
 message_imasul = imasul_link
 bot.send_message('@DR_noticias', message_imasul)
+
+message_cemtecms = cemtecms_link
+bot.send_message('@DR_noticias', message_cemtecms)
 
